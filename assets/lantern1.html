@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <title>都市繁星·新春祝福 · 礼花版</title>
+    <style>
+    /* ===== 灯笼核心样式 ===== */
+    .lantern-left,
+    .lantern-right {
+        position: fixed;
+        top: 20%;
+        transform: translateY(-50%);
+        width: 90px;
+        height: 120px;
+        z-index: 2000;
+        pointer-events: none;
+        animation: float 4s infinite ease-in-out;
+    }
+    
+    .lantern-left { left: 120px; }
+    .lantern-right { right: 120px; }
+    
+    .lantern-body {
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 30% 30%, #e63946, #b71c1c);
+        border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+        border: 3px solid #ffb347;
+        box-shadow: 0 0 20px rgba(255, 80, 80, 0.7), inset 0 -5px 15px rgba(0,0,0,0.4);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        animation: sway 2.5s ease-in-out infinite;
+        transform-origin: top center;
+    }
+    
+    .lantern-body::before,
+    .lantern-body::after {
+        content: '';
+        position: absolute;
+        width: 90%;
+        height: 8px;
+        background: radial-gradient(circle, #ffd966, #d4a017);
+        border-radius: 20px;
+        left: 5%;
+    }
+    
+    .lantern-body::before { top: 15%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .lantern-body::after { bottom: 15%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    
+    .lantern-text {
+        font-size: 38px;
+        font-weight: 900;
+        color: #ffec9e;
+        text-shadow: 2px 2px 0 #a52a2a, 4px 4px 8px #000;
+        font-family: 'KaiTi', '楷体', 'Microsoft YaHei', cursive;
+        line-height: 1;
+    }
+    
+    .lantern-handle {
+        width: 20px;
+        height: 24px;
+        background: #8b5a2b;
+        border-radius: 10px 10px 2px 2px;
+        margin: 0 auto 4px;
+        box-shadow: 0 2px 6px #3e2b1b;
+        border-bottom: 2px solid #c07a3a;
+    }
+    
+    .tassel {
+        width: 48px;
+        height: 32px;
+        background: radial-gradient(ellipse at top, #c91414, #8b1a1a);
+        margin: -8px auto 0;
+        border-radius: 50% 50% 30% 30% / 60% 60% 30% 30%;
+        box-shadow: inset 0 6px 6px rgba(0,0,0,0.2);
+        display: flex;
+        justify-content: center;
+    }
+    
+    .tassel::after {
+        content: '🎐';
+        font-size: 20px;
+        color: #ffe066;
+        line-height: 30px;
+        text-shadow: 0 2px 2px black;
+        transform: rotate(5deg);
+    }
+    
+    .lantern-right .lantern-text { font-size: 36px; }
+    .lantern-right .tassel { background: radial-gradient(ellipse at top, #b80c0c, #7a1515); }
+    
+    @keyframes sway {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(4deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-4deg); }
+        100% { transform: rotate(0deg); }
+    }
+    
+    @keyframes float {
+        0% { top: 45%; }
+        50% { top: 47%; }
+        100% { top: 45%; }
+    }
+    
+    /* ===== 繁星环绕 - 数量已减半 ===== */
+    .lantern-stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1500;
+    }
+    
+    /* 星星基础样式 */
+    .lantern-stars i {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle at 30% 30%, #fffde7, #ffc107);
+        border-radius: 50%;
+        opacity: 0.9;
+        animation: twinkle 3s infinite alternate;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
+        pointer-events: auto;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 1501;
+    }
+    
+    /* 不同大小的星星 */
+    .lantern-stars i.big-star {
+        width: 12px;
+        height: 12px;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 1);
+        opacity: 1;
+    }
+    
+    .lantern-stars i.small-star {
+        width: 5px;
+        height: 5px;
+        opacity: 0.7;
+    }
+    
+    /* 悬停放大效果 */
+    .lantern-stars i:hover {
+        transform: scale(2.8);
+        background: radial-gradient(circle at 30% 30%, #fff3b0, #ffb300);
+        box-shadow: 0 0 25px rgba(255, 200, 0, 1);
+        opacity: 1;
+        z-index: 1800;
+    }
+    
+    /* ===== 祝福语气泡 ===== */
+    .star-wish {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(145deg, #c62828, #b71c1c);
+        color: #ffecb3;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: 'KaiTi', '楷体', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+        white-space: nowrap;
+        padding: 10px 22px;
+        border-radius: 40px 40px 40px 8px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.4), 0 0 0 3px #ffb74d, 0 0 30px rgba(255, 200, 0, 0.4);
+        text-shadow: 1px 1px 0 #5e0000;
+        letter-spacing: 2px;
+        border: 1px solid #ffe082;
+        transition: opacity 0.2s, visibility 0.2s, bottom 0.2s;
+        pointer-events: none;
+        z-index: 10000 !important;
+    }
+    
+    .star-wish::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -7px;
+        border-width: 7px;
+        border-style: solid;
+        border-color: #b71c1c transparent transparent transparent;
+    }
+    
+    .lantern-stars i:hover .star-wish {
+        visibility: visible;
+        opacity: 1;
+        bottom: 45px;
+        z-index: 10001 !important;
+    }
+    
+    /* 灯笼附近星星气泡位置调整 */
+    .lantern-stars i[style*="left: 6"] .star-wish,
+    .lantern-stars i[style*="left: 7"] .star-wish,
+    .lantern-stars i[style*="left: 8"] .star-wish,
+    .lantern-stars i[style*="left: 9"] .star-wish,
+    .lantern-stars i[style*="left: 10"] .star-wish,
+    .lantern-stars i[style*="left: 11"] .star-wish,
+    .lantern-stars i[style*="left: 12"] .star-wish,
+    .lantern-stars i[style*="left: 13"] .star-wish,
+    .lantern-stars i[style*="left: 14"] .star-wish,
+    .lantern-stars i[style*="left: 15"] .star-wish,
+    .lantern-stars i[style*="left: 16"] .star-wish,
+    .lantern-stars i[style*="left: 17"] .star-wish,
+    .lantern-stars i[style*="left: 18"] .star-wish,
+    .lantern-stars i[style*="left: 19"] .star-wish {
+        bottom: 65px !important;
+        left: 80px !important;
+        transform: none !important;
+    }
+    
+    .lantern-stars i[style*="right: 6"] .star-wish,
+    .lantern-stars i[style*="right: 7"] .star-wish,
+    .lantern-stars i[style*="right: 8"] .star-wish,
+    .lantern-stars i[style*="right: 9"] .star-wish,
+    .lantern-stars i[style*="right: 10"] .star-wish,
+    .lantern-stars i[style*="right: 11"] .star-wish,
+    .lantern-stars i[style*="right: 12"] .star-wish,
+    .lantern-stars i[style*="right: 13"] .star-wish,
+    .lantern-stars i[style*="right: 14"] .star-wish,
+    .lantern-stars i[style*="right: 15"] .star-wish,
+    .lantern-stars i[style*="right: 16"] .star-wish,
+    .lantern-stars i[style*="right: 17"] .star-wish,
+    .lantern-stars i[style*="right: 18"] .star-wish,
+    .lantern-stars i[style*="right: 19"] .star-wish,
+    .lantern-stars i[style*="right: 20"] .star-wish {
+        bottom: 65px !important;
+        left: auto !important;
+        right: 80px !important;
+        transform: none !important;
+    }
+    
+    .lantern-stars i.top-edge .star-wish {
+        bottom: auto;
+        top: 45px !important;
+    }
+    
+    .lantern-stars i.top-edge .star-wish::after {
+        top: auto;
+        bottom: 100%;
+        border-color: transparent transparent #b71c1c transparent;
+    }
+    
+    .lantern-stars i.left-edge .star-wish {
+        left: 25px !important;
+        transform: none;
+    }
+    
+    .lantern-stars i.left-edge .star-wish::after {
+        left: 18px;
+    }
+    
+    .lantern-stars i.right-edge .star-wish {
+        left: auto;
+        right: 25px !important;
+        transform: none;
+    }
+    
+    .lantern-stars i.right-edge .star-wish::after {
+        left: auto;
+        right: 18px;
+    }
+    
+    @keyframes twinkle {
+        0% { opacity: 0.5; transform: scale(0.9); box-shadow: 0 0 5px rgba(255, 215, 0, 0.6); }
+        100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px rgba(255, 215, 0, 1); }
+    }
+    
+    /* ===== 左侧灯笼下祝福按钮 ===== */
+    .lantern-btn-container {
+        position: fixed;
+        left: 45%!important;
+        top: 81%!important;
+        transform: translateY(80px);
+        z-index: 2500;
+        pointer-events: auto;
+    }
+    
+    .wish-btn {
+        background: linear-gradient(145deg, #c62828, #b71c1c);
+        color: #ffecb3;
+        border: 2px solid #ffb74d;
+        border-radius: 30px;
+        padding: 5px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: 'KaiTi', '楷体', 'Microsoft YaHei', sans-serif;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 2px #ffb347;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+    
+    .wish-btn:hover {
+        transform: scale(1.05);
+        background: linear-gradient(145deg, #d32f2f, #b71c1c);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 0 3px #ffa000;
+    }
+    
+    /* ===== 弹窗表单样式 ===== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 20000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .modal-content {
+        background: linear-gradient(145deg, #fff3e0, #ffebcc);
+        border-radius: 24px;
+        padding: 32px 40px;
+        width: 460px;
+        max-width: 90%;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 6px #ffb347;
+        border: 2px solid #ffe082;
+        position: relative;
+    }
+    
+    .modal-content h3 {
+        color: #b71c1c;
+        font-size: 28px;
+        margin: 0 0 24px 0;
+        text-align: center;
+        font-family: 'KaiTi', '楷体', sans-serif;
+        text-shadow: 1px 1px 0 #ffe082;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        color: #8b3a3a;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-family: 'KaiTi', '楷体', sans-serif;
+    }
+    
+    /* 自定义下拉框 */
+    .custom-select {
+        position: relative;
+        width: 100%;
+    }
+    
+    .select-selected {
+        background: white;
+        border: 2px solid #ffb347;
+        border-radius: 30px;
+        padding: 12px 16px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: black;
+        font-size: 16px;
+        font-family: 'Microsoft YaHei', sans-serif;
+        transition: all 0.2s;
+    }
+    
+    .select-selected:hover {
+        border-color: #c62828;
+        box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1);
+    }
+    
+    .select-items {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #ffb347;
+        border-radius: 20px;
+        z-index: 9999;
+        max-height: 300px;
+        overflow-y: auto;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    .select-items div {
+        padding: 12px 16px;
+        cursor: pointer;
+        color: black;
+        font-size: 16px;
+        font-family: 'Microsoft YaHei', sans-serif;
+        transition: all 0.2s;
+    }
+    
+    .select-items div:first-child {
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+    }
+    
+    .select-items div:last-child {
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+    }
+    
+    .select-items div:hover {
+        background: #ffb347;
+        color: #b71c1c;
+    }
+    
+    .select-items div.selected-item {
+        background: #b71c1c;
+        color: #ffecb3 !important;
+    }
+    
+    .select-arrow {
+        color: #b71c1c;
+        font-size: 14px;
+        transition: transform 0.2s;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #ffb347;
+        border-radius: 30px;
+        font-size: 16px;
+        color: #000;
+        background: white;
+        font-family: 'Microsoft YaHei', sans-serif;
+        box-sizing: border-box;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #c62828;
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.2);
+    }
+    
+    #recipient {
+        display: none;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 16px;
+        margin-top: 32px;
+        justify-content: center;
+    }
+    
+    .submit-btn, .cancel-btn {
+        padding: 12px 32px;
+        border: none;
+        border-radius: 40px;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'KaiTi', '楷体', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(145deg, #c62828, #b71c1c);
+        color: #ffecb3;
+    }
+    
+    .cancel-btn {
+        background: #9e9e9e;
+        color: white;
+    }
+    
+    .submit-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(198, 40, 40, 0.5);
+        border-color: #ffb74d;
+    }
+    
+    .cancel-btn:hover {
+        background: #757575;
+        transform: scale(1.05);
+    }
+    
+    /* ===== 滚动祝福墙 ===== */
+    .wish-wall {
+        top: -20px!important;
+        left: 300px;
+        right: 300px;
+        height: 40px;
+        margin-bottom:20px;
+        background: linear-gradient(145deg, #c62828, #b71c1c);
+        margin-top:-60px!important;
+        backdrop-filter: blur(5px);
+        border-radius: 50px;
+        border: 3px solid #ffb347;
+        z-index: 3000;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+    
+    .wish-scroll {
+        display: flex;
+        animation: scrollWishes 40s linear infinite;
+        white-space: nowrap;
+        gap: 20px;
+    }
+    
+    .wish-item {
+        color: #ffecb3;
+        font-size: 18px;
+        font-family: 'KaiTi', '楷体', 'Microsoft YaHei', sans-serif;
+        text-shadow: 1px 1px 0 #5e0000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 30px;
+        height: 50px;
+    }
+    
+    .wish-item span {
+        font-weight: bold;
+        color: #ffd966;
+    }
+    
+    @keyframes scrollWishes {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    
+    .wish-wall:hover .wish-scroll {
+        animation-play-state: paused;
+    }
+    
+    @media (max-width: 1000px) {
+        .wish-wall {
+            left: 20px;
+            right: 20px;
+        }
+    }
+    
+    @media (max-width: 700px) {
+        .lantern-left, .lantern-right { width: 70px; height: 94px; }
+        .lantern-left { left: 6px; }
+        .lantern-right { right: 6px; }
+        .lantern-text { font-size: 28px; }
+        .lantern-stars i { width: 6px; height: 6px; }
+        .lantern-stars i.big-star { width: 9px; height: 9px; }
+        .lantern-stars i.small-star { width: 4px; height: 4px; }
+        .star-wish {
+            font-size: 12px;
+            padding: 6px 16px;
+            bottom: 25px;
+            white-space: nowrap;
+        }
+        .lantern-btn-container { left: 6px; }
+        .wish-btn { padding: 8px 16px; font-size: 14px; }
+        .wish-wall { left: 10px; right: 10px; height: 60px; }
+        .wish-item { font-size: 14px; height: 40px; }
+        .modal-content { padding: 24px 20px; }
+        .modal-content h3 { font-size: 24px; }
+    }
+
+    /* ===== 🎆 新增礼花效果样式 (仅新增，未改动任何原有代码) ===== */
+    .firework-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 99999;
+    }
+    </style>
+</head>
+<body>
+    <!-- 繁星环绕灯笼 - 数量已减半，共79颗星星，每条祝福语不重复 -->
+    <div class="lantern-stars" id="starContainer">
+        <!-- ===== 左侧区域繁星（精简后保留） ===== -->
+        <i class="big-star" style="left: 15px; top: 3%;"></i>
+        <i style="left: 62px; top: 7%;"></i>
+        <i class="small-star" style="left: 115px; top: 5%;"></i>
+        <i style="left: 35px; top: 11%;"></i>
+        <i class="small-star" style="left: 143px; top: 9%;"></i>
+        <i style="left: 185px; top: 13%;"></i>
+        <i class="big-star" style="left: 215px; top: 6%;"></i>
+        <i style="left: 245px; top: 10%;"></i>
+        <i class="small-star" style="left: 155px; top: 15%;"></i>
+        <i style="left: 95px; top: 18%;"></i>
+        <i class="small-star" style="left: 38px; top: 20%;"></i>
+        <i style="left: 235px; top: 22%;"></i>
+        <i class="big-star" style="left: 70px; top: 25%;"></i>
+        <i style="left: 50px; top: 33%;"></i>
+        <i class="big-star" style="left: 150px; top: 35%;"></i>
+        <i class="small-star" style="left: 210px; top: 38%;"></i>
+        <i style="left: 30px; top: 40%;"></i>
+        <i class="small-star" style="left: 230px; top: 42%;"></i>
+        <i style="left: 90px; top: 45%;"></i>
+        <i class="big-star" style="left: 160px; top: 48%;"></i>
+        <i style="left: 10px; top: 50%;"></i>
+        <i class="small-star" style="left: 123px; top: 52%;"></i>
+        <i class="small-star" style="left: 40px; top: 70%;"></i>
+        <i style="left: 130px; top: 72%;"></i>
+        <i class="big-star" style="left: 190px; top: 75%;"></i>
+        <i style="left: 60px; top: 78%;"></i>
+        <i class="small-star" style="left: 150px; top: 80%;"></i>
+        <i style="left: 210px; top: 82%;"></i>
+        <i class="small-star" style="left: 18px; top: 85%;"></i>
+        <i style="left: 103px; top: 88%;"></i>
+        
+        <!-- ===== 右侧区域繁星（精简后保留） ===== -->
+        <i class="big-star" style="right: 25px; top: 3%;"></i>
+        <i style="right: 82px; top: 7%;"></i>
+        <i class="small-star" style="right: 150px; top: 5%;"></i>
+        <i style="right: 45px; top: 11%;"></i>
+        <i class="small-star" style="right: 178px; top: 9%;"></i>
+        <i style="right: 220px; top: 13%;"></i>
+        <i class="big-star" style="right: 250px; top: 6%;"></i>
+        <i style="right: 280px; top: 10%;"></i>
+        <i class="small-star" style="right: 190px; top: 15%;"></i>
+        <i style="right: 130px; top: 18%;"></i>
+        <i class="small-star" style="right: 58px; top: 20%;"></i>
+        <i style="right: 270px; top: 22%;"></i>
+        <i class="big-star" style="right: 95px; top: 25%;"></i>
+        <i style="right: 75px; top: 33%;"></i>
+        <i class="big-star" style="right: 185px; top: 35%;"></i>
+        <i class="small-star" style="right: 245px; top: 38%;"></i>
+        <i style="right: 55px; top: 40%;"></i>
+        <i class="small-star" style="right: 265px; top: 42%;"></i>
+        <i style="right: 125px; top: 45%;"></i>
+        <i class="big-star" style="right: 195px; top: 48%;"></i>
+        <i style="right: 28px; top: 50%;"></i>
+        <i class="small-star" style="right: 158px; top: 52%;"></i>
+        <i class="small-star" style="right: 65px; top: 70%;"></i>
+        <i style="right: 165px; top: 72%;"></i>
+        <i class="big-star" style="right: 225px; top: 75%;"></i>
+        <i style="right: 85px; top: 78%;"></i>
+        <i class="small-star" style="right: 185px; top: 80%;"></i>
+        <i style="right: 245px; top: 82%;"></i>
+        <i class="small-star" style="right: 38px; top: 85%;"></i>
+        <i style="right: 138px; top: 88%;"></i>
+        
+        <!-- ===== 中间星桥区域（精简） ===== -->
+        <i style="left: 260px; top: 8%;"></i>
+        <i class="small-star" style="left: 280px; top: 18%;"></i>
+        <i style="left: 300px; top: 28%;"></i>
+        <i class="big-star" style="left: 260px; top: 38%;"></i>
+        <i style="left: 280px; top: 48%;"></i>
+        <i class="small-star" style="left: 300px; top: 58%;"></i>
+        <i style="right: 290px; top: 12%;"></i>
+        <i class="small-star" style="right: 310px; top: 22%;"></i>
+        <i style="right: 330px; top: 32%;"></i>
+        <i class="big-star" style="right: 290px; top: 42%;"></i>
+        <i style="right: 310px; top: 52%;"></i>
+        <i class="small-star" style="right: 330px; top: 62%;"></i>
+        
+        <!-- ===== 上下区域及点缀（精简） ===== -->
+        <i class="big-star" style="left: 30px; top: 5px;"></i>
+        <i style="left: 80px; top: 12px;"></i>
+        <i class="small-star" style="left: 130px; top: 8px;"></i>
+        <i class="big-star" style="right: 45px; top: 5px;"></i>
+        <i style="right: 95px; top: 12px;"></i>
+        <i class="small-star" style="right: 145px; top: 8px;"></i>
+        <i class="big-star" style="left: 20px; bottom: 5px;"></i>
+        <i style="left: 70px; bottom: 12px;"></i>
+        <i class="small-star" style="left: 120px; bottom: 8px;"></i>
+        <i class="big-star" style="right: 35px; bottom: 5px;"></i>
+        <i style="right: 85px; bottom: 12px;"></i>
+        <i class="small-star" style="right: 135px; bottom: 8px;"></i>
+        <i class="big-star" style="left: 70px; top: 1%;"></i>
+        <i style="left: 125px; top: 2%;"></i>
+        <i class="big-star" style="right: 85px; top: 1%;"></i>
+        <i style="right: 140px; top: 2%;"></i>
+    </div>
+    
+    <!-- 左右灯笼 -->
+    <div class="lantern-left">
+        <div class="lantern-handle"></div>
+        <div class="lantern-body">
+            <div class="lantern-text">春</div>
+        </div>
+        <div class="tassel"></div>
+    </div>
+    
+    <div class="lantern-right">
+        <div class="lantern-handle"></div>
+        <div class="lantern-body">
+            <div class="lantern-text">福</div>
+        </div>
+        <div class="tassel"></div>
+    </div>
+    
+    <!-- 左侧灯笼下祝福按钮 -->
+    <div class="lantern-btn-container">
+        <button class="wish-btn" onclick="openWishModal()">
+            <span style="font-size: 24px;">🎉</span> 写新年祝福
+        </button>
+    </div>
+    
+    <!-- 祝福弹窗 -->
+    <div id="wishModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>✨ 写新年祝福 ✨</h3>
+            <div class="form-group">
+                <label>📝 昵称</label>
+                <input type="text" id="nickname" placeholder="你的名字或昵称" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label>🎯 祝福谁</label>
+                <div class="custom-select">
+                    <div class="select-selected" onclick="toggleDropdown(event)">
+                        <span id="selectedOption">博主</span>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                    <div id="selectOptions" class="select-items" style="display: none;">
+                        <div onclick="selectOption('博主')" class="selected-item">博主</div>
+                        <div onclick="selectOption('自己')">自己</div>
+                        <div onclick="selectOption('好友')">好友</div>
+                        <div onclick="selectOption('伴侣')">伴侣</div>
+                        <div onclick="selectOption('孩子')">孩子</div>
+                        <div onclick="selectOption('父母')">父母</div>
+                    </div>
+                </div>
+                <select id="recipient" style="display: none;">
+                    <option value="博主" selected>博主</option>
+                    <option value="自己">自己</option>
+                    <option value="好友">好友</option>
+                    <option value="伴侣">伴侣</option>
+                    <option value="孩子">孩子</option>
+                    <option value="父母">父母</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>💝 祝福内容</label>
+                <input type="text" id="wishContent" placeholder="输入你的祝福语..." maxlength="50">
+            </div>
+            <div class="modal-buttons">
+                <button class="submit-btn" onclick="submitWish()">✨ 提交祝福 ✨</button>
+                <button class="cancel-btn" onclick="closeWishModal()">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 滚动祝福墙 -->
+    <div class="wish-wall">
+        <div class="wish-scroll" id="wishScroll"></div>
+    </div>
+
+    <!-- ===== 🎆 新增礼花canvas (仅追加，未动其他) ===== -->
+    <canvas id="fireworkCanvas" class="firework-canvas"></canvas>
+    
+    <script>
+    (function() {
+        'use strict';
+        
+        // 都市专属祝福语库（79条不重复，与星星数量完全匹配）
+       const urbanWishes = [
+    "💻 工作顺心，项目顺利",
+    "🏋️ 身体健康，充满活力",
+    "📈 财源广进，收益长红",
+    "🏠 安居乐业，家宅平安",
+    "🚗 出行平安，一路顺风",
+    "👶 孩子健康，快乐成长",
+    "💑 感情甜蜜，相守相伴",
+    "🐱 宠物活泼，陪伴暖心",
+    "📱 事业有成，蒸蒸日上",
+    "🧳 旅途愉快，风景常新",
+    "💆 容光焕发，精力充沛",
+    "🎓 学业进步，前程似锦",
+    "🍳 生活有味，日日三餐",
+    "🛋️ 居所温馨，岁月静好",
+    "👟 步履轻盈，自在如风",
+    "💍 良缘美满，携手一生",
+    "👪 家人安康，团圆常乐",
+    "🤝 贵人相助，知己相伴",
+    "🎸 兴趣成趣，心生欢喜",
+    "📷 记录美好，回忆生光",
+    "🍃 心无挂碍，夜夜好眠",
+    "🧘 身心舒展，平衡自在",
+    "🍷 小酌怡情，清醒从容",
+    "👔 职场顺遂，步步高升",
+    "🏡 家和人兴，岁月温柔",
+    "🐶 萌宠相伴，日日治愈",
+    "🖥️ 工作高效，得心应手",
+    "📊 提案通过，才华被见",
+    "🎤 自信发光，闪耀时刻",
+    "🧹 生活有序，内心澄明",
+    "🚴 乘风而行，自由畅快",
+    "🎮 张弛有度，乐在其中",
+    "🛵 日常通勤，平安顺遂",
+    "🌿 阳台有绿，心生欢喜",
+    "📚 开卷有益，思想丰盈",
+    "✍️ 笔下有光，创作自由",
+    "🎬 好戏连台，生活有趣",
+    "🍲 人间烟火，温暖常在",
+    "🧧 财气盈门，好运连连",
+    "🛒 物有所爱，购有所乐",
+    "💎 旧物新生，小有收获",
+    "🎟️ 如愿以偿，心想事成",
+    "🧶 巧手匠心，温暖过冬",
+    "🕯️ 一室清香，心安即归",
+    "🍵 茶暖人心，日日是好日",
+    "☕ 晨起有光，咖啡飘香",
+    "🍱 工作再忙，好好吃饭",
+    "🍇 健康饮食，轻盈体态",
+    "🩰 优雅从容，气质如兰",
+    "🏄 勇敢尝试，拥抱新趣",
+    "⛷️ 奔赴山海，自在如风",
+    "🥏 挥洒汗水，快乐运动",
+    "🧗 挑战自我，步步向上",
+    "🎾 挥拍之间，释放压力",
+    "🏸 酣畅淋漓，身心舒畅",
+    "🥊 有力也有度，张弛从容",
+    "🧘‍♀️ 心静如水，内耗归零",
+    "🛁 卸下疲惫，拥抱松弛",
+    "🧖 容光焕发，自信从容",
+    "💇 焕然一新，悦纳自己",
+    "👗 穿出自我，自在得体",
+    "🕶️ 阳光正好，心情明媚",
+    "👠 步履生风，优雅前行",
+    "👜 心仪已久，终得所爱",
+    "⌚ 规律作息，日日精进",
+    "💎 时光沉淀，愈发温润",
+    "🌆 晚霞温柔，人间值得",
+    "🏙️ 城市灯火，心安归处",
+    "🌉 夜色宜人，有人共赏",
+    "🎨 眼中有美，心中有光",
+    "🎭 沉浸其中，感动常在",
+    "🎪 开怀一笑，烦恼全消",
+    "🍸 微醺时刻，自在随心",
+    "🍰 甜度刚好，生活如蜜",
+    "🍧 夏日清凉，童心未泯",
+    "🍂 四时流转，各有风景",
+    "❄️ 冬日暖阳，有人问暖",
+    "🌸 春有约，花不误",
+    "☀️ 日日是好日，晨起有光",
+    "🌧️ 雨打窗棂，心安是家",
+    "🌪️ 风雨有伞，归途有灯",
+    "🚇 人来人往，终有归处"
+];
+        // 获取所有星星
+        const stars = document.querySelectorAll('.lantern-stars i');
+        console.log(`✨ 当前星星数量: ${stars.length}颗，祝福语数量: ${urbanWishes.length}条，完全匹配不重复`);
+        
+        // 直接使用前79条祝福语（保证不重复）
+        const uniqueWishes = urbanWishes.slice(0, stars.length);
+        
+        // 为每颗星星添加祝福语气泡，每条都不重复
+        stars.forEach((star, index) => {
+            const wishSpan = document.createElement('span');
+            wishSpan.className = 'star-wish';
+            wishSpan.textContent = uniqueWishes[index] + " ✨";
+            star.appendChild(wishSpan);
+            star.setAttribute('data-wish', wishSpan.textContent);
+        });
+        
+        // 气泡位置自适应
+        function adjustBubblePosition() {
+            const viewportWidth = window.innerWidth;
+            stars.forEach((star) => {
+                star.classList.remove('top-edge', 'left-edge', 'right-edge');
+                const rect = star.getBoundingClientRect();
+                const starTop = rect.top;
+                const starLeft = rect.left;
+                const starRight = viewportWidth - rect.right;
+                
+                if (starTop < 80) star.classList.add('top-edge');
+                if (starLeft < 80) star.classList.add('left-edge');
+                if (starRight < 80) star.classList.add('right-edge');
+            });
+        }
+        
+        adjustBubblePosition();
+        window.addEventListener('resize', adjustBubblePosition);
+        window.addEventListener('scroll', adjustBubblePosition, { passive: true });
+        setTimeout(adjustBubblePosition, 200);
+    })();
+    
+    // ===== 自定义下拉框相关函数 =====
+    window.toggleDropdown = function(event) {
+        event.stopPropagation();
+        var options = document.getElementById('selectOptions');
+        var arrow = document.querySelector('.select-arrow');
+        
+        if (options.style.display === 'none') {
+            options.style.display = 'block';
+            if (arrow) arrow.innerHTML = '▲';
+        } else {
+            options.style.display = 'none';
+            if (arrow) arrow.innerHTML = '▼';
+        }
+    };
+    
+    window.selectOption = function(value) {
+        document.getElementById('selectedOption').textContent = value;
+        
+        var select = document.getElementById('recipient');
+        for (var i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === value) {
+                select.options[i].selected = true;
+                break;
+            }
+        }
+        
+        var allOptions = document.querySelectorAll('#selectOptions div');
+        allOptions.forEach(function(opt) {
+            opt.classList.remove('selected-item');
+            if (opt.textContent === value) {
+                opt.classList.add('selected-item');
+            }
+        });
+        
+        var options = document.getElementById('selectOptions');
+        var arrow = document.querySelector('.select-arrow');
+        options.style.display = 'none';
+        if (arrow) arrow.innerHTML = '▼';
+    };
+    
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.custom-select')) {
+            var options = document.getElementById('selectOptions');
+            var arrow = document.querySelector('.select-arrow');
+            if (options) {
+                options.style.display = 'none';
+                if (arrow) arrow.innerHTML = '▼';
+            }
+        }
+    });
+    
+    // ===== 祝福墙功能 =====
+    (function() {
+        'use strict';
+        
+        const WISHES_STORAGE_KEY = 'savedWishes';
+        
+        const defaultWishes = [
+            { nickname: '星语者', recipient: '博主', content: '代码无BUG，发量永浓密' },
+            { nickname: '城市旅人', recipient: '自己', content: '房贷压力小，升职加薪早' },
+            { nickname: '宝妈', recipient: '家人', content: '宝宝健康，老公体贴' }
+        ];
+        
+        function loadWishes() {
+            const saved = localStorage.getItem(WISHES_STORAGE_KEY);
+            return saved ? JSON.parse(saved) : defaultWishes;
+        }
+        
+        function saveWishes(wishes) {
+            localStorage.setItem(WISHES_STORAGE_KEY, JSON.stringify(wishes));
+        }
+        
+        function renderWishes() {
+            const wishScroll = document.getElementById('wishScroll');
+            if (!wishScroll) return;
+            
+            const wishes = loadWishes();
+            const html = wishes.map(w => `
+                <div class="wish-item">
+                    <span>${w.nickname}</span>祝福<span>${w.recipient}</span> · ${w.content}
+                </div>
+            `).join('');
+            
+            wishScroll.innerHTML = html + html;
+        }
+        
+        window.openWishModal = function() {
+            const modal = document.getElementById('wishModal');
+            if (modal) modal.style.display = 'flex';
+        };
+        
+        window.closeWishModal = function() {
+            const modal = document.getElementById('wishModal');
+            if (modal) modal.style.display = 'none';
+        };
+        
+        window.submitWish = function() {
+            const nickname = document.getElementById('nickname')?.value.trim();
+            const recipient = document.getElementById('recipient')?.value;
+            const content = document.getElementById('wishContent')?.value.trim();
+            
+            if (!nickname || !content) {
+                alert('请填写昵称和祝福内容～');
+                return;
+            }
+            
+            const newWish = { nickname, recipient, content };
+            const wishes = loadWishes();
+            wishes.unshift(newWish);
+            if (wishes.length > 20) wishes.pop();
+            saveWishes(wishes);
+            
+            const stars = document.querySelectorAll('.lantern-stars i');
+            if (stars.length > 0) {
+                const randomStar = stars[Math.floor(Math.random() * stars.length)];
+                const wishSpan = randomStar.querySelector('.star-wish');
+                if (wishSpan) {
+                    wishSpan.textContent = `${nickname} 祝福 ${recipient} · ${content} ✨`;
+                }
+            }
+            
+            renderWishes();
+            closeWishModal();
+            
+            document.getElementById('nickname').value = '';
+            document.getElementById('wishContent').value = '';
+        };
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('wishModal');
+            if (event.target === modal) {
+                closeWishModal();
+            }
+        };
+        
+        renderWishes();
+    })();
+
+    // ===== 🎆 新增礼花特效（完全独立，不修改原代码） =====
+    (function fireworkInit() {
+        const canvas = document.getElementById('fireworkCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrame = null;
+        let lastTime = 0;
+        let fireworkCounter = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // 粒子类
+        class FireworkParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 12;
+                this.vy = (Math.random() - 0.8) * 12 - 3;
+                this.size = Math.random() * 3 + 2;
+                this.color = color || `hsl(${Math.random() * 360}, 100%, 70%)`;
+                this.alpha = 1;
+                this.life = Math.random() * 60 + 50;
+                this.decay = 0.015 + Math.random() * 0.02;
+                this.gravity = 0.1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.alpha -= this.decay;
+                this.life -= 1;
+            }
+            draw() {
+                ctx.globalAlpha = Math.max(this.alpha, 0);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // 创建礼花 (坐标x, y)
+        function createFirework(x, y) {
+            const count = 60 + Math.floor(Math.random() * 40);
+            const baseColor = `hsl(${Math.random() * 360}, 90%, 65%)`;
+            for (let i = 0; i < count; i++) {
+                const colorVariant = `hsl(${Math.random() * 60 + (parseInt(baseColor.split(',')[0].split('(')[1]) || 0)}, 95%, 70%)`;
+                particles.push(new FireworkParticle(x, y, colorVariant));
+            }
+            // 额外金色亮片
+            for (let i = 0; i < 15; i++) {
+                particles.push(new FireworkParticle(x, y, `hsl(${Math.random() * 20 + 45}, 100%, 65%)`));
+            }
+        }
+
+        // 动画循环
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 反向遍历删除无效粒子
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                if (p.alpha <= 0.02 || p.life <= 0 || p.y > canvas.height + 50 || p.x < -50 || p.x > canvas.width + 50) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                p.draw();
+            }
+            
+            if (particles.length > 0 || fireworkCounter > 0) {
+                animationFrame = requestAnimationFrame(animate);
+            } else {
+                animationFrame = null;
+            }
+        }
+
+        // 启动礼花 (从事件坐标绽放)
+        function launchFireworks(e) {
+            let x, y;
+            if (e.type === 'click' && e.target.closest('.lantern-stars i')) {
+                const rect = e.target.closest('i').getBoundingClientRect();
+                x = rect.left + rect.width / 2;
+                y = rect.top + rect.height / 2;
+            } else {
+                // 提交祝福时使用随机屏幕位置(但偏中上，好看)
+                x = window.innerWidth * (0.3 + Math.random() * 0.4);
+                y = window.innerHeight * (0.3 + Math.random() * 0.3);
+            }
+            // 同时绽放2-3簇礼花
+            const bursts = 2 + Math.floor(Math.random() * 2);
+            for (let i = 0; i < bursts; i++) {
+                setTimeout(() => {
+                    createFirework(x + (Math.random()-0.5)*40, y + (Math.random()-0.5)*30);
+                }, i * 50);
+            }
+            fireworkCounter++;
+            if (!animationFrame) {
+                animate();
+            }
+            setTimeout(() => { fireworkCounter--; }, 300);
+        }
+
+        // 监听星星点击 —— 完全无侵入，只附加礼花
+        document.querySelectorAll('.lantern-stars i').forEach(star => {
+            star.addEventListener('click', function(e) {
+                e.stopPropagation();  // 避免干扰其他逻辑
+                launchFireworks(e);
+            });
+        });
+
+        // 监听提交祝福按钮 —— 从原submitWish内部调用，我们需要劫持但不破坏原功能
+        const originalSubmit = window.submitWish;
+        window.submitWish = function() {
+            // 先执行原逻辑
+            const nickname = document.getElementById('nickname')?.value.trim();
+            const content = document.getElementById('wishContent')?.value.trim();
+            if (!nickname || !content) {
+                alert('请填写昵称和祝福内容～');
+                return;
+            }
+            // 调用原始逻辑(确保祝福墙更新、localStorage等)
+            originalSubmit.call(this);
+            // 然后绽放礼花
+            launchFireworks({ type: 'submit' });
+        };
+
+        // 防止星星点击时触发其他意外(但保留气泡显示)
+        // 完全不影响原有hover效果
+    })();
+    </script>
+</body>
+</html>
